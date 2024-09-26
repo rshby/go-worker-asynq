@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
+	"time"
 )
 
 // GetEnv is function to load env
@@ -100,4 +101,133 @@ func MysqlDSN() string {
 		MysqlUser(), MysqlPassword(), MysqlHost(), MysqlPort(), MysqlDbName(), MysqlTimezone())
 
 	return dsn
+}
+
+// RedisCacheHost is function to get redis cache host from env
+func RedisCacheHost() string {
+	if host := GetEnv("REDIS_CACHE_HOST"); host != "" {
+		return host
+	}
+
+	return DefaultRedisCacheHost
+}
+
+// RedisWorkerHost is function to get redis worker host from env
+func RedisWorkerHost() string {
+	if host := GetEnv("REDIS_WORKER_HOST"); host != "" {
+		return host
+	}
+
+	return DefaultRedisWorkerHost
+}
+
+// RedisPort is function to get redis port from env
+func RedisPort() int {
+	if port := GetEnv("REDIS_PORT"); port != "" {
+		redisPort, err := strconv.Atoi(port)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultRedisPort
+		}
+
+		return redisPort
+	}
+
+	return DefaultRedisPort
+}
+
+// RedisCacheDbNumber is function to get redis cache db number from env
+func RedisCacheDbNumber() int {
+	if dbNumber := GetEnv("REDIS_CACHE_DB_NUMBER"); dbNumber != "" {
+		num, err := strconv.Atoi(dbNumber)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultRedisCacheDbNumber
+		}
+
+		return num
+	}
+
+	return DefaultRedisCacheDbNumber
+}
+
+// RedisWorkerDbNumber is function to get redis worker db number from env
+func RedisWorkerDbNumber() int {
+	if dbNumber := GetEnv("REDIS_WORKER_DB_NUMBER"); dbNumber != "" {
+		num, err := strconv.Atoi(dbNumber)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultRedisWorkerDbNumber
+		}
+
+		return num
+	}
+
+	return DefaultRedisWorkerDbNumber
+}
+
+// RedisCacheDSN is function to get redis cache dsn
+func RedisCacheDSN() string {
+	dsn := fmt.Sprintf("redis://%s:%d/%d",
+		RedisCacheHost(), RedisPort(), RedisCacheDbNumber())
+
+	return dsn
+}
+
+// RedisWorkerDSN is function to get redis worker dsn
+func RedisWorkerDSN() string {
+	dsn := fmt.Sprintf("redis://%s:%d/%d",
+		RedisWorkerHost(), RedisPort(), RedisWorkerDbNumber())
+
+	return dsn
+}
+
+// WorkerNamespace is function to get worker namespace from env
+func WorkerNamespace() string {
+	return GetEnv("WORKER_NAMESPACE")
+}
+
+// WorkerTaskRetention is function to get worker task retention from env
+func WorkerTaskRetention() time.Duration {
+	if retention := GetEnv("WORKER_TASK_RETENTION"); retention != "" {
+		duration, err := time.ParseDuration(retention)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultWorkerTaskRetention
+		}
+
+		return duration
+	}
+
+	return DefaultWorkerTaskRetention
+}
+
+// WorkerRetryAttemps is function to get worker retry attemps from env
+func WorkerRetryAttemps() int {
+	if retry := GetEnv("WORKER_RETRY_ATTEMPS"); retry != "" {
+		workerRetry, err := strconv.Atoi(retry)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultWorkerRetryAttemps
+		}
+
+		return workerRetry
+	}
+
+	return DefaultWorkerRetryAttemps
+}
+
+// WorkerTimeout is function to get worker timeout from env
+func WorkerTimeout() time.Duration {
+	if timeout := GetEnv("WORKER_TIMEOUT"); timeout != "" {
+		duration, err := time.ParseDuration(timeout)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultWorkerTimeout
+		}
+
+		return duration
+	}
+
+	return DefaultWorkerTimeout
 }

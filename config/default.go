@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 const (
 	DefaultAppPort = 4000
 
@@ -9,4 +11,14 @@ const (
 	DefaultMysqlPort     = 3306
 	DefaultMysqlDbName   = "go_worker_asynq_db"
 	DefaultMysqlTimezone = "UTC"
+
+	DefaultRedisCacheHost      = "localhost"
+	DefaultRedisWorkerHost     = "localhost"
+	DefaultRedisPort           = 6379
+	DefaultRedisCacheDbNumber  = 0
+	DefaultRedisWorkerDbNumber = 1
+
+	DefaultWorkerTaskRetention = 2 * time.Hour
+	DefaultWorkerRetryAttemps  = 3
+	DefaultWorkerTimeout       = 2 * time.Hour
 )
