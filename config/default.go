@@ -15,6 +15,8 @@ const (
 	DefaultRedisCacheHost      = "localhost"
 	DefaultRedisWorkerHost     = "localhost"
 	DefaultRedisPort           = 6379
+	DefaultRedisPingInterval   = 5 * time.Second
+	DefaultRedisRetryAttemps   = float64(3)
 	DefaultRedisCacheDbNumber  = 0
 	DefaultRedisWorkerDbNumber = 1
 

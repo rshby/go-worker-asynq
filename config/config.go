@@ -20,6 +20,11 @@ func GetEnv(key string) string {
 	return os.Getenv(key)
 }
 
+// EnvironmentMode is function to get env mode from env
+func EnvironmentMode() string {
+	return GetEnv("MODE")
+}
+
 // AppPort is function to get app port from env
 func AppPort() int {
 	if port := GetEnv("APP_PORT"); port != "" {
@@ -33,6 +38,21 @@ func AppPort() int {
 	}
 
 	return DefaultAppPort
+}
+
+// EnableCache is function to get enable cache from env
+func EnableCache() bool {
+	if enable := GetEnv("ENABLE_CACHE"); enable != "" {
+		parseBool, err := strconv.ParseBool(enable)
+		if err != nil {
+			logrus.Error(err)
+			return false
+		}
+
+		return parseBool
+	}
+
+	return false
 }
 
 // MysqlUser is function to get mysql user from env
@@ -134,6 +154,35 @@ func RedisPort() int {
 	}
 
 	return DefaultRedisPort
+}
+
+// RedisPingInterval is function to get redis ping interval from env
+func RedisPingInterval() time.Duration {
+	if ping := GetEnv("REDIS_PING_INTERVAL"); ping != "" {
+		duration, err := time.ParseDuration(ping)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultRedisPingInterval
+		}
+
+		return duration
+	}
+
+	return DefaultRedisPingInterval
+}
+
+func RedisRetryAttemps() float64 {
+	if retry := GetEnv("REDIS_RETRY_ATTEMPS"); retry != "" {
+		redisRetry, err := strconv.ParseFloat(retry, 64)
+		if err != nil {
+			logrus.Error(err)
+			return DefaultRedisRetryAttemps
+		}
+
+		return redisRetry
+	}
+
+	return DefaultRedisRetryAttemps
 }
 
 // RedisCacheDbNumber is function to get redis cache db number from env

@@ -1,6 +1,9 @@
 package utils
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 func JSONUnmarshal(data []byte, v interface{}) error {
 	if err := json.Unmarshal([]byte(data), &v); err != nil {
@@ -25,4 +28,8 @@ func ToByte(i interface{}) []byte {
 
 func Dump(i interface{}) string {
 	return string(ToByte(i))
+}
+
+func WriteStringTemplate(stringTemplate string, args ...interface{}) string {
+	return fmt.Sprintf(stringTemplate, args...)
 }

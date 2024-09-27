@@ -8,9 +8,11 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go-worker-asynq/cacher"
 	"go-worker-asynq/config"
 	"go-worker-asynq/internal/database"
 	"go-worker-asynq/internal/job"
+	"go-worker-asynq/utils"
 	"net/http"
 	"os"
 	"os/signal"
@@ -39,6 +41,19 @@ func server(cmd *cobra.Command, args []string) {
 	dbMysql, err := db.DB()
 	if err != nil {
 		logrus.Fatal(err)
+	}
+
+	// create instance cacheManager
+	cacheManager := cacher.ConstructCacheManager()
+	cacheManager.SetDisableCaching(!config.EnableCache())
+	if config.EnableCache() {
+		// connect database redis cache
+		redisDb, err := database.InitializeRedigoRedisConnectionPool(config.RedisCacheDSN(), nil)
+		if err != nil {
+			logrus.Fatalf("failed to connect REDIS [%s] : %s", config.RedisCacheDSN(), err.Error())
+		}
+		defer utils.WrapCloser(redisDb.Close)
+		cacheManager.SetConnectionPool(redisDb)
 	}
 
 	// parse redis dsn
@@ -79,15 +94,15 @@ func server(cmd *cobra.Command, args []string) {
 			select {
 			case <-sigChan:
 				logrus.Info("receive interrup signal ⚠️")
-				gracefullShutdown(&srv)
 				taskQueue.Stop()
+				gracefullShutdown(&srv)
 				gracefullDbMYSQL(dbMysql)
 				quitChan <- true
 				return
 			case err = <-errChan:
 				logrus.Error(err)
-				gracefullShutdown(&srv)
 				taskQueue.Stop()
+				gracefullShutdown(&srv)
 				gracefullDbMYSQL(dbMysql)
 				quitChan <- true
 				return
@@ -116,6 +131,10 @@ func server(cmd *cobra.Command, args []string) {
 }
 
 func gracefullShutdown(srv *http.Server) {
+	// set value to chnannel, to stop redis check db
+	database.StopTickerCh <- true
+	time.Sleep(100 * time.Millisecond)
+
 	if srv != nil {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
