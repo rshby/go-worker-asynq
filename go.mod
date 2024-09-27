@@ -24,6 +24,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.10.0 // indirect
+	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.1 // indirect
@@ -43,6 +44,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/redis/go-redis/v9 v9.6.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
+	github.com/rubenv/sql-migrate v1.7.0 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
