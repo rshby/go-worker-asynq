@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"go-worker-asynq/cacher"
 	"go-worker-asynq/config"
+	controllerHttp "go-worker-asynq/internal/controller/http"
 	"go-worker-asynq/internal/database"
 	"go-worker-asynq/internal/job"
 	"go-worker-asynq/utils"
@@ -69,11 +70,17 @@ func server(cmd *cobra.Command, args []string) {
 	// create instance taskQueue
 	taskQueue := job.NewTaskQueue(redisOpt)
 
+	// register service
+	studentService := InitStudentService(db, cacheManager, taskQueue)
+
 	// create gin app
 	app := gin.Default()
 	app.UseRawPath = true
 	app.UnescapePathValues = true
 	app.RemoveExtraSlash = true
+
+	// create router and register endpoints
+	controllerHttp.RouteService(&app.RouterGroup, studentService)
 
 	// create server
 	srv := http.Server{
