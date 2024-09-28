@@ -143,6 +143,7 @@ func server(cmd *cobra.Command, args []string) {
 	logrus.Info("server exit ❌")
 }
 
+// gracefullShutdown is function to close and shutdown server
 func gracefullShutdown(srv *http.Server) {
 	// set value to chnannel, to stop redis check db
 	database.StopTickerCh <- true
@@ -171,6 +172,7 @@ func gracefullShutdown(srv *http.Server) {
 	}
 }
 
+// gracefullDbMYSQL is function to close connection and shutdown database mysql
 func gracefullDbMYSQL(db *sql.DB) {
 	if db != nil {
 		if err := db.Close(); err != nil {
@@ -181,6 +183,7 @@ func gracefullDbMYSQL(db *sql.DB) {
 	}
 }
 
+// initSwaggerDocs is function to register swagger documentation endpoint
 func initSwaggerDocs(app *gin.RouterGroup) {
 	docs.SwaggerInfo.Title = "API Documentation"
 	docs.SwaggerInfo.Description = "service worker asynq API documentation"
