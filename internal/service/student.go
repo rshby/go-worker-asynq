@@ -52,11 +52,25 @@ func (s *studentService) InsertStudentBulk(ctx context.Context, request *entity.
 			mu.Lock()
 			defer mu.Unlock()
 
-			// create earch task for each student
-			if err := s.taskQueue.Enqueue(ctx, entity.TaskInsertStudent, student); err != nil {
+			// cek if student identity_number already exist in database
+			var err error
+			existStudent, err := s.studentRepository.GetStudentByIdentityNumber(ctx, student.IdentityNumber)
+			if err != nil {
 				logger.Error(err)
 				return
 			}
+
+			if existStudent != nil {
+				logger.Error(ErrStudentAlreadyExist)
+				return
+			}
+
+			// create earch task for each student
+			if err = s.taskQueue.Enqueue(ctx, entity.TaskInsertStudent, student); err != nil {
+				logger.Error(err)
+				return
+			}
+			logger.Info("send task to worker")
 		}(wg, mu)
 	}
 
