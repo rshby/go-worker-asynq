@@ -60,11 +60,14 @@ func runWorker(cmd *cobra.Command, args []string) {
 		logrus.Fatalf("failed to parse REDIS worker DSN [%s]", config.RedisWorkerDSN())
 	}
 
+	// create instance service with dependency injection
+	jobStudentService := InitJobStudentService(db, cacheManager)
+
 	// create instance taskQueue
 	taskQueue := job.NewTaskQueue(redisOpt)
 
 	// create instance taskHandler
-	taskHandler := job.NewTaskHandler(db, taskQueue)
+	taskHandler := job.NewTaskHandler(db, taskQueue, jobStudentService)
 
 	// create instance taskProcessor
 	taskProcessor := job.NewTaskProcessor(redisOpt, config.WorkerNamespace(), taskHandler)

@@ -107,7 +107,7 @@ func (s *studentRepository) GetStudentByIdentityNumber(ctx context.Context, iden
 
 	// get data from db
 	var id uint64
-	if err := s.db.WithContext(ctx).Model(&entity.Student{}).Where("id = ?", id).Pluck("id", &id).Error; err != nil {
+	if err := s.db.WithContext(ctx).Model(&entity.Student{}).Where("identity_number = ?", identityNumber).Pluck("id", &id).Error; err != nil {
 		logger.Error(err)
 		return nil, err
 	}

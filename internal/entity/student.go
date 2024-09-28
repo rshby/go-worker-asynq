@@ -35,8 +35,8 @@ type (
 // dto
 type (
 	RequestInsertStudent struct {
-		IdentityNumber string `json:"identity_number" validate:"required"`
-		Name           string `json:"name,omitempty"`
+		IdentityNumber string `json:"identity_number" validate:"required" example:"123456"`
+		Name           string `json:"name,omitempty" example:"John Doe"`
 	}
 
 	RequestInsertStudentBulk struct {
