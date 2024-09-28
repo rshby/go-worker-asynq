@@ -17,6 +17,18 @@ func (r *Router) InitStudentRoutes(app *gin.RouterGroup) {
 	}
 }
 
+// InsertStudentBulk godoc
+// Endpoint for insert bulk students
+// @Summary Endpoint for insert bulk students
+// @Description
+// @Tags Student
+// @Accept json
+// @Produce json
+// @Param Accept       header string true "Example : application/json"
+// @Param Content-Type header string true "Example : application/json"
+// @Param request body entity.RequestInsertStudentBulk true "payload request body"
+// @Success 200 {object} entity.SwaggerResponseOKDTO{}
+// @Router /v1/student/bulk [POST]
 func (r *Router) InsertStudentBulk(c *gin.Context) {
 	logger := logrus.WithContext(c).WithFields(logrus.Fields{
 		"context": utils.DumpIncomingContext(c),

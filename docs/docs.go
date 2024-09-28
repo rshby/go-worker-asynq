@@ -14,7 +14,97 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/v1/student/bulk": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "summary": "Endpoint for insert bulk students",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Example : application/json",
+                        "name": "Accept",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example : application/json",
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "payload request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestInsertStudentBulk"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.SwaggerResponseOKDTO"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.RequestInsertStudent": {
+            "type": "object",
+            "required": [
+                "identity_number"
+            ],
+            "properties": {
+                "identity_number": {
+                    "type": "string",
+                    "example": "123456"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                }
+            }
+        },
+        "entity.RequestInsertStudentBulk": {
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.RequestInsertStudent"
+                    }
+                }
+            }
+        },
+        "entity.SwaggerResponseOKDTO": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

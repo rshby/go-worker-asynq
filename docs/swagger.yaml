@@ -1,4 +1,63 @@
+definitions:
+  entity.RequestInsertStudent:
+    properties:
+      identity_number:
+        example: "123456"
+        type: string
+      name:
+        example: John Doe
+        type: string
+    required:
+    - identity_number
+    type: object
+  entity.RequestInsertStudentBulk:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.RequestInsertStudent'
+        type: array
+    required:
+    - data
+    type: object
+  entity.SwaggerResponseOKDTO:
+    properties:
+      data: {}
+      message:
+        example: success
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /v1/student/bulk:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Example : application/json'
+        in: header
+        name: Accept
+        required: true
+        type: string
+      - description: 'Example : application/json'
+        in: header
+        name: Content-Type
+        required: true
+        type: string
+      - description: payload request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestInsertStudentBulk'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.SwaggerResponseOKDTO'
+      summary: Endpoint for insert bulk students
+      tags:
+      - Student
 swagger: "2.0"
