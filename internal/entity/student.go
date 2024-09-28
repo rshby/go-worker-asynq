@@ -28,6 +28,7 @@ type (
 
 	StudentService interface {
 		InsertStudent(ctx context.Context, request *RequestInsertStudent) error
+		InsertStudentBulk(ctx context.Context, request *RequestInsertStudentBulk) error
 	}
 )
 
@@ -37,4 +38,13 @@ type (
 		IdentityNumber string `json:"identity_number" validate:"required"`
 		Name           string `json:"name,omitempty"`
 	}
+
+	RequestInsertStudentBulk struct {
+		Data []RequestInsertStudent `json:"data" validate:"required"`
+	}
 )
+
+// Validate is function to validate request insert student bulk
+func (r *RequestInsertStudentBulk) Validate() error {
+	return validate.Struct(*r)
+}

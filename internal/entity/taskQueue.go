@@ -6,3 +6,7 @@ type TaskQueue interface {
 	Enqueue(ctx context.Context, taskName string, data any) error
 	Stop()
 }
+
+const (
+	TaskInsertStudent = "student:insert"
+)
