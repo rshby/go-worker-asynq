@@ -8,8 +8,11 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go-worker-asynq/cacher"
 	"go-worker-asynq/config"
+	docs "go-worker-asynq/docs"
 	controllerHttp "go-worker-asynq/internal/controller/http"
 	"go-worker-asynq/internal/database"
 	"go-worker-asynq/internal/job"
@@ -81,6 +84,9 @@ func server(cmd *cobra.Command, args []string) {
 
 	// create router and register endpoints
 	controllerHttp.RouteService(&app.RouterGroup, studentService)
+
+	// create endpoint swagger
+	initSwaggerDocs(&app.RouterGroup)
 
 	// create server
 	srv := http.Server{
@@ -173,4 +179,12 @@ func gracefullDbMYSQL(db *sql.DB) {
 
 		logrus.Info("success stop db mysql 🔴")
 	}
+}
+
+func initSwaggerDocs(app *gin.RouterGroup) {
+	docs.SwaggerInfo.Title = "API Documentation"
+	docs.SwaggerInfo.Description = "service worker asynq API documentation"
+	docs.SwaggerInfo.Version = "1.0"
+
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
